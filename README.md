@@ -206,6 +206,20 @@ client_secret : ccd_gateway_secret
 new redirect_uri (click 'Add URI' before saving) : http://localhost:3451/oauth2redirect
 ```
 
+Follow below steps to configure XUI Webapp on SIDAM Web Admin
+
+On the **Add Service** screen the following fields are required:
+
+```
+label : <xui_webapp>
+description : <xui_webapp>
+client_id : xui_webapp
+client_secret : xui_webapp_secrect
+new redirect_uri (click 'Add URI' before saving) : http://localhost:3455/oauth2/callback
+client scope: profile openid roles manage-user create-user
+```
+
+
 ### 2. Create Idam roles
 
 Execute the following script to add roles to SIDAM:
@@ -659,6 +673,42 @@ Optional compose files will allow other projects to be enabled on demand using t
   * `./ccd enable elasticsearch` (assuming `backend` is already enabled, otherwise enable it)
   * export ES_ENABLED_DOCKER=true
   * verify that Data Store is able to connect to elasticsearch: `curl localhost:4452/health` 
+  
+* To enable **logstash**  
+* `./ccd enable logstash` (assuming `elasticsearch` is already enabled, otherwise enable it)
+
+* To run **service specific logstash instance**
+  * First build the local log stash instances for all services using instructions on ccd-logstash [ccd-logstash](https://github.com/hmcts/ccd-logstash)
+  * Export CCD_LOGSTASH_SERVICES environment variable to use service specific logstash instances
+  * If CCD_LOGSTASH_SERVICES is not exported, then `ccd-logstash:latest` will be used
+  * Make sure to set the below two environment variables in `.env` file
+  * By default CCD_LOGSTASH_REPOSITORY_URL is point to remote repository `hmctspublic.azurecr.io`, this is defined in `.env` file.
+
+```bash
+    CCD_LOGSTASH_REPOSITORY_URL=hmctspublic.azurecr.io
+```
+  
+   * For local docker repository please change the values as below
+   
+```bash
+    CCD_LOGSTASH_REPOSITORY_URL=hmcts
+```
+   * To run service specific instances of logstash, give service names a comma serparated string as below
+   
+```bash
+    export CCD_LOGSTASH_SERVICES=divorce,sscs,ethos,cmc,probate
+```
+
+   * To run all service instances of logstash
+   
+```bash
+    CCD_LOGSTASH_SERVICES=all
+```
+OR 
+
+```bash
+    CCD_LOGSTASH_SERVICES=testall
+```
 
 * To enable **ccd-definition-designer-api**
   * `./ccd enable backend ccd-definition-designer-api`
