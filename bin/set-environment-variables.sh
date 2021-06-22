@@ -19,7 +19,7 @@ function set_env_variables_from_file() {
                 command="export $key=$value"
                 $command
             else 
-                setx "$key" $(echo $value | sed -e 's/\r//g')
+                setx "$key" $(echo $value | sed -e 's/\r//g') "/m"
             fi
         done < "$file"
     else
